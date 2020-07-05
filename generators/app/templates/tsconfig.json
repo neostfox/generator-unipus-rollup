@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "noImplicitAny": false,
+      "noEmitOnError": true,
+      "removeComments": true,
+      "sourceMap": true,
+      "target": "ES2015",
+      "preserveSymlinks":true,
+      "declaration":true,
+    },
+    "include": [
+      "src/*"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
+  }
