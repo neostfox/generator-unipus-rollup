@@ -6,16 +6,16 @@ let filePaths = [];
  * 递归获取模板文件夹下的模板
  * @param {string} currentDirPath 当前文件路径
  */
-function walk(currentDirPath) {
-  const paths = fs.readdirSync(currentDirPath);
-  paths.forEach((item) => {
-    const fpath = path.join(currentDirPath, item);
-    if (fs.statSync(fpath).isFile())
-      filePaths.push(
-        process.cwd(),
-        fpath.replace(path.resolve(__dirname, "templates") + "/", "")
-      );
-    else walk(fpath);
+function walk(curremtPath, callback, calldir) {
+  fs.readdir(curremtPath, (err, files) => {
+    if (err) throw err;
+    files.forEach((file) => {
+      const fpath = path.join(curremtPath, file);
+      if (fs.statSync(fpath).isDirectory()) {
+        calldir(file);
+        walk(fpath, callback, calldir);
+      } else if (fs.statSync(fpath).isFile) callback(fpath);
+    });
   });
 }
 const Generator = require("yeoman-generator");
@@ -45,13 +45,16 @@ module.exports = class extends Generator {
     });
   }
   writing() {
-    walk(loadPath);
-    filePaths.forEach((item) => {
-      this.fs.copyTpl(
-        this.templatePath(item),
-        this.destinationPath(item),
-        this.anwsers
-      );
-    });
+    walk(
+      loadPath,
+      (item) => {
+        this.fs.copyTpl(
+          this.templatePath(item),
+          this.destinationPath(item.replace(__dirname + "\\templates\\", "")),
+          this.anwsers
+        );
+      },
+      () => {}
+    );
   }
 };
