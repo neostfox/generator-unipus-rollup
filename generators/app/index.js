@@ -12,6 +12,7 @@ function walk(currentDirPath) {
     const fpath = path.join(currentDirPath, item);
     if (fs.statSync(fpath).isFile())
       filePaths.push(
+        process.cwd(),
         fpath.replace(path.resolve(__dirname, "templates") + "/", "")
       );
     else walk(fpath);
